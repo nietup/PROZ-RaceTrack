@@ -11,8 +11,9 @@ public class Model {
 	}
 
 	public Data initialData() {
-		// TODO Auto-generated method stub
-		return null;
+
+		Data data = new Data(1, 0);
+		return data;
 	}
 
 }
