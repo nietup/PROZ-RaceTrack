@@ -3,8 +3,8 @@ package Graphics;
 import java.awt.image.BufferedImage;
 
 public class Assets {
-	private static final int width = 100, height = 100;
-	
+	private static final int width = 50, height = 50;
+
 	public static BufferedImage playerN,
 								playerNE,
 								opponentN,
@@ -32,5 +32,14 @@ public class Assets {
 		playerNE = sprites.crop(width, 0, width, height);
 		opponentN = sprites.crop(0, height, width, height);
 		opponentNE = sprites.crop(width, height, width, height);
+		blank = sprites.crop(0, 2*height, width, height);;
+	}
+	
+	public static int getWidth() {
+		return width;
+	}
+
+	public static int getHeight() {
+		return height;
 	}
 }

@@ -5,8 +5,7 @@ import RaceTrack.Input;
 
 public class Controller {
 
-	public Input collectInput() {
+	public void collectInput(Input input) {
 		// TODO Auto-generated method stub
-		return null;
 	}
 }

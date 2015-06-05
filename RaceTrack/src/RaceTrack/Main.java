@@ -16,9 +16,9 @@ public class Main implements Runnable {
 	
 	private void init() {
 		model = new Model();
-		view = new View("Race Track Ultimate Pro Elite I - The Race Track Saga", 700, 700);
+		data = model.initialData(10, 10, 20, 20);
+		view = new View("Race Track Ultimate Pro Elite I - The Race Track Saga", data);
 		controller = new Controller();
-		data = model.initialData();
 	}
 	
 	public synchronized void start() {
@@ -45,6 +45,7 @@ public class Main implements Runnable {
 		}
 	}
 	
+	/*Contains the main game loop**/
 	public void run() {
 		init();
 		
@@ -60,10 +61,11 @@ public class Main implements Runnable {
 			delta += (now - lastTime) / timePerTick;
 			lastTime = now;
 			
+			/**This is the main game loop*/
 			if(delta >= 1) {			
 				view.update(data);
-				input = controller.collectInput();
-				data = model.process(input);
+				controller.collectInput(input);
+				model.process(data, input);
 				delta = 0;
 			}
 		}

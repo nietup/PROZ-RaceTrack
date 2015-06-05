@@ -3,17 +3,25 @@ package RaceTrack;
 import java.util.Vector;
 
 public class Car {
-	public int
-		x_velocity,		//base possible horizontal move vaule (+/- 1); positive values towards right
-		y_velocity;		//base possible vertical move vaule (+/- 1); positive values towards bottom
-	
+	/**base possible horizontal and vertical move vaule (+/- 1); positive values towards right*/
+	public int x_velocity, y_velocity;
 	public Positions position = null;
+	/**the history of a car's movement*/
+	public Vector path;
+	/**actual vehicle's orientation
+	 * possible valuse are:
+	 * "N"
+	 * "NE"
+	 * "E"
+	 * ...etc.*/
+	public String orientation;
+	public int team;
 	
-	public Vector path;			//the history of a car's movement
-	
-	public Car(int x, int y) {
+	public Car(int x, int y, int pTeam) {
 		position = new Positions(x, y);
 		x_velocity = y_velocity = 0;
 		path = new Vector();
+		orientation = "N";
+		team = pTeam;
 	}
 }
