@@ -11,6 +11,7 @@ public class Tile {
 		public static Tile finishTile = new FinishTile(2);
 		public static Tile carTile = new CarTile(3);
 		public static Tile pathTile = new PathTile(4);
+		public static enum Type {BLANK, WALL, FINISH, CAR, PATH};
 		
 		protected BufferedImage texture;
 		protected final int id;

@@ -7,7 +7,7 @@ import Graphics.Assets;
 public class PathTile extends Tile {
 
 	public PathTile( int id) {
-		super(Assets.blank, id);
+		super(Assets.w_ne, id);
 		// TODO Auto-generated constructor stub
 	}
 

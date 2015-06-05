@@ -2,6 +2,7 @@ package Model;
 
 import RaceTrack.Data;
 import RaceTrack.Input;
+import TileSystem.Tile;
 
 public class Model {
 	
@@ -20,8 +21,11 @@ public class Model {
 			for (int y = 0; y < data.getMapHeight(); y++)
 				data.setTile(x, y, 0);
 		
-		data.setTile(startX-1, startY, 3);
-		data.setTile(startX+1, startY, 3);
+		data.setTile(startX-1, startY, Tile.Type.CAR.ordinal());
+		data.setTile(startX+1, startY, Tile.Type.CAR.ordinal());
+		data.setTile(2, 2, Tile.Type.FINISH.ordinal());
+		data.setTile(2, 3, Tile.Type.PATH.ordinal());
+		data.setTile(2, 4, Tile.Type.WALL.ordinal());
 		
 		return data;
 	}
