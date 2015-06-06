@@ -13,7 +13,7 @@ public class Data {
 	public Data(int x, int y, int pMapWidth, int pMapHeight) {
 		player = new Car(x - 1, y, 0);
 		opponent = new Car(x + 1, y, 1);
-		mapWidth = pMapHeight;
+		mapWidth = pMapWidth;
 		mapHeight = pMapHeight;
 		map = new int[mapWidth][mapHeight];
 	}

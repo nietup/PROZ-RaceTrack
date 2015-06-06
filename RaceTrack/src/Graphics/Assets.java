@@ -3,7 +3,7 @@ package Graphics;
 import java.awt.image.BufferedImage;
 
 public class Assets {
-	private static final int width = 50, height = 50;
+	private static final int width = 25, height = 25;
 
 	public static BufferedImage playerN,
 								playerNE,
@@ -35,7 +35,8 @@ public class Assets {
 								nw_e, 
 								sw_e,
 								w_se, 
-								w_ne;
+								w_ne,
+								available;
 	
 	public static void init() {
 		SpriteSheetHandler sprites = new SpriteSheetHandler(ImageLoader.loadImage("/Gfx/SpriteSheet.jpg"));
@@ -71,6 +72,7 @@ public class Assets {
 		finish = sprites.crop(2*width, 2*height, width, height);
 		nw_se = sprites.crop(0, 3*height, width, height);
 		sw_ne = sprites.flip(0, 3*height, width, height, 1);
+		available = sprites.crop(width, 3*height, width, height);
 	}
 	
 	public static int getWidth() {

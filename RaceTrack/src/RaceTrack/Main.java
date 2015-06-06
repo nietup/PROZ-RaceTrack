@@ -16,9 +16,11 @@ public class Main implements Runnable {
 	
 	private void init() {
 		model = new Model();
-		data = model.initialData(1, 0, 20, 20);
-		view = new View("Race Track Ultimate Pro Elite I - The Race Track Saga", data);
+		data = model.initialData("Assets/Maps/Map1.lvl");
+		//data = model.initialData(1, 0, 40, 20);
 		controller = new Controller();
+		view = new View("Race Track Ultimate Pro Elite I - The Race Track Saga", data, controller);
+		input = new Input();
 	}
 	
 	public synchronized void start() {
@@ -49,7 +51,6 @@ public class Main implements Runnable {
 	public void run() {
 		init();
 		
-		// TODO change it so the game loop goes only when player makes move
 		int fps = 60;
 		double timePerTick = 1000000000 / fps;
 		double delta = 0;
@@ -61,12 +62,11 @@ public class Main implements Runnable {
 			delta += (now - lastTime) / timePerTick;
 			lastTime = now;
 			
-			/**This is the main game loop*/
-			if(delta >= 1) {			
+			if (delta >= 1) {
+				delta = 0;
 				view.update(data);
 				controller.collectInput(input);
 				model.process(data, input);
-				delta = 0;
 			}
 		}
 		stop();

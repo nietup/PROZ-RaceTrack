@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
+import Controller.Controller;
 import Graphics.Assets;
 import Graphics.ImageLoader;
 import Graphics.SpriteSheetHandler;
@@ -18,15 +19,14 @@ public class View {
 	private JFrame frame;
 	private Canvas canvas;
 	private String title;
-	private int width, height, frameNo;
+	private int width, height;
 	private BufferStrategy bufferStrategy;
 	private Graphics graphics;
 		
-	public View(String pTitle, Data data) {
+	public View(String pTitle, Data data, Controller controller) {
 		title = pTitle;
 		width = data.getMapWidth() * Assets.getWidth();
 		height = data.getMapHeight() * Assets.getHeight();
-		frameNo = 0;
 		
 		frame = new JFrame(title);
 		frame.setSize(width, height);
@@ -39,11 +39,16 @@ public class View {
 		canvas.setPreferredSize(new Dimension(width, height));
 		canvas.setMaximumSize(new Dimension(width, height));
 		canvas.setMinimumSize(new Dimension(width, height));
+		canvas.setFocusable(false);
+		canvas.addMouseListener(controller);
 		
 		frame.add(canvas);
 		frame.pack();
 		
+		
 		Assets.init();		//loading images goes here
+		
+		update(data);
 	}
 	
 	/** This is rendering function */
@@ -51,20 +56,17 @@ public class View {
 		bufferStrategy = canvas.getBufferStrategy();
 		
 		if (bufferStrategy == null) {
-			canvas.createBufferStrategy(3);
+			canvas.createBufferStrategy(2);
 			return;
 		}
 		graphics = bufferStrategy.getDrawGraphics();
 		graphics.clearRect(0, 0, width, height); 			//Clear the scene
-		//Drawing itself starts here
-		for(int y = 0; y < data.getMapHeight(); y++){
-			for(int x = 0; x < data.getMapWidth(); x++) {
+		
+		for(int y = 0; y < data.getMapHeight(); y++)
+			for(int x = 0; x < data.getMapWidth(); x++)
 				graphics.drawImage(data.getTile(x, y).getTexture(), Assets.getWidth()*x, Assets.getHeight()*y, null);
-			}
-		}
-		//End of drawing
+
 		bufferStrategy.show();
 		graphics.dispose();
-		frameNo++;
 	}
 }

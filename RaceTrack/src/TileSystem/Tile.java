@@ -3,31 +3,33 @@ package TileSystem;
 import java.awt.image.BufferedImage;
 
 public class Tile {
-	//STATIC STUFF HERE
+	private enum Way {n_s, e_w, nw_se, sw_ne, sw_n, n_se, nw_s, s_ne, nw_e, sw_e,w_se, w_ne};
 	
-		public static Tile[] type = new Tile[5];
-		public static Tile blankTile = new BlankTile(0);
-		public static Tile wallTile = new WallTile(1);
-		public static Tile finishTile = new FinishTile(2);
-		public static Tile carTile = new CarTile(3);
-		public static Tile pathTile = new PathTile(4);
-		public static enum Type {BLANK, WALL, FINISH, CAR, PATH};
+	public static Tile[] type = new Tile[20];
+	public static Tile blankTile = new BlankTile(0);
+	public static Tile wallTile = new WallTile(1);
+	public static Tile finishTile = new FinishTile(2);
+	public static Tile playerCarTile = new PlayerCarTile(3);
+	public static Tile opponentCarTile = new OpponentCarTile(4);
+	public static Tile pathTile = new PathTile(5);
+	public static Tile availableTile = new AvailableTile(6);
+	public static enum Type {BLANK, WALL, FINISH, PLAYER_CAR, OPPONENT_CAR, PATH, AVAILABLE};
 		
-		protected BufferedImage texture;
-		protected final int id;
+	protected BufferedImage texture;
+	protected final int id;
 		
-		public Tile(BufferedImage pTexture, int pId) {
-			texture = pTexture;
-			id = pId;
-			
-			type[id] = this;
-		}
+	public Tile(BufferedImage pTexture, int pId) {
+		texture = pTexture;
+		id = pId;
 		
-		public int getId(){
-			return id;
-		}
+		type[id] = this;
+	}
 		
-		public BufferedImage getTexture() {
-			return texture;
-		}
+	public int getId(){
+		return id;
+	}
+		
+	public BufferedImage getTexture() {
+		return texture;
+	}
 }

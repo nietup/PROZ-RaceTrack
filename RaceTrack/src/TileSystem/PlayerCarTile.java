@@ -5,9 +5,9 @@ import java.awt.image.BufferedImage;
 import Graphics.Assets;
 import RaceTrack.Car;
 
-public class CarTile extends Tile {
+public class PlayerCarTile extends Tile {
 
-	public CarTile(int id) {
+	public PlayerCarTile(int id) {
 		super(Assets.playerN, id);
 		// TODO Auto-generated constructor stub
 	}
