@@ -4,6 +4,7 @@ import Graphics.Assets;
 import RaceTrack.Data;
 import RaceTrack.Input;
 import TileSystem.Tile;
+import Tools.Finish;
 import Tools.Tools;
 
 public class Model {
@@ -15,45 +16,33 @@ public class Model {
 	}
 
 	/**This method generates game map*/
-	public Data initialData(int startX, int startY, int width, int height, int finishX1, int finishY1, int finishX2, int finishY2, int finishX3, int finishY3) {
-		Data data = new Data(startX, startY, width, height, finishX1, finishY1, finishX2, finishY2, finishX3, finishY3);
+	public Data initialData(int startX, int startY, int width, int height, Finish finish) {
+		Data data = new Data(startX, startY, width, height, finish);
 		
 		for (int x = 0; x < data.getMapWidth(); x++)
 			for (int y = 0; y < data.getMapHeight(); y++)
 				data.setTile(x, y, 0);
-		
-		
-		data.setTile(startX-1, startY, Tile.Type.PLAYER_CAR.ordinal());
-		data.setTile(startX+1, startY, Tile.Type.OPPONENT_CAR.ordinal());
-		data.setTile(3, 2, Tile.Type.FINISH.ordinal());
-		data.setTile(2, 1, Tile.Type.PATH.ordinal());
-		data.setTile(2, 2, Tile.Type.PATH.ordinal());
-		data.setTile(2, 3, Tile.Type.PATH.ordinal());
-		data.setTile(2, 4, Tile.Type.PATH.ordinal());
-		data.setTile(2, 5, Tile.Type.PATH.ordinal());
-		data.setTile(2, 6, Tile.Type.PATH.ordinal());
-		data.setTile(12, 4, Tile.Type.WALL.ordinal());
-		data.setTile(0, 2, Tile.Type.AVAILABLE.ordinal());
 		
 		return data;
 	}
 	
 	/*This method loads map from file**/
 	public Data initialData(String path) {
-		int startX, startY, width, height, finishX1, finishY1, finishX2, finishY2, finishX3, finishY3;
+		int startX, startY, width, height;
+		Finish finish = new Finish();
 		String file = Tools.loadFileAsString(path);
 		String[] mapTile = file.split("\\s+");
 		width = Tools.parseInt(mapTile[0]);
 		height = Tools.parseInt(mapTile[1]);
 		startX = Tools.parseInt(mapTile[2]);
 		startY = Tools.parseInt(mapTile[3]);
-		finishX1 = Tools.parseInt(mapTile[4]);
-		finishY1 = Tools.parseInt(mapTile[5]);
-		finishX2 = Tools.parseInt(mapTile[6]);
-		finishY2 = Tools.parseInt(mapTile[7]);
-		finishX3 = Tools.parseInt(mapTile[8]);
-		finishY3 = Tools.parseInt(mapTile[9]);
-		Data data = new Data(startX, startY, width, height, finishX1, finishY1, finishX2, finishY2, finishX3, finishY3);//robisz kurwe z kodu
+		finish.first.x = Tools.parseInt(mapTile[4]);
+		finish.first.y = Tools.parseInt(mapTile[5]);
+		finish.secound.x = Tools.parseInt(mapTile[6]);
+		finish.secound.y = Tools.parseInt(mapTile[7]);
+		finish.third.x = Tools.parseInt(mapTile[8]);
+		finish.third.y = Tools.parseInt(mapTile[9]);
+		Data data = new Data(startX, startY, width, height, finish);
 
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
@@ -61,7 +50,11 @@ public class Model {
 			}
 		}
 		
+		data.setTile(finish.first.x, finish.first.y, Tile.Type.FINISH.ordinal());
+		data.setTile(finish.secound.x, finish.secound.y, Tile.Type.FINISH.ordinal());
+		data.setTile(finish.third.x, finish.third.y, Tile.Type.FINISH.ordinal());
 		data.setTile(startX-1, startY, Tile.Type.PLAYER_CAR.ordinal());
+		//computeAvailables(data);
 		data.setTile(startX+1, startY, Tile.Type.OPPONENT_CAR.ordinal());
 		
 		return data;
@@ -71,6 +64,7 @@ public class Model {
 	 * @param data information about actual map situation, that will be processed
 	 * @param input information about player choice*/
 	public void process(Data data, Input input) {
+		computeAvailables(data);
 		
 		if (!correctInput(data, input))
 			return;
@@ -80,7 +74,6 @@ public class Model {
 		data.player.position.y = translatedY;
 		data.setTile(data.player.position.x, data.player.position.y, Tile.Type.PLAYER_CAR.ordinal());
 		
-		computeAvailables(data);
 		moveOpponent(data);
 		
 		if (data.isFinal())
@@ -101,8 +94,19 @@ public class Model {
 
 	/**This method also checks if the state is final*/
 	private void computeAvailables(Data data) {
-		// TODO Auto-generated method stub
 		
+		/**The beginning case*/
+		if (data.player.path.size() == 10) {
+			
+		} else {
+			for (int x = -1; x < 2; x++) {
+				for (int y = -1; y < 2; y++) {
+					if (data.getTileId(data.player.position.x + x, data.player.position.y + y) == Tile.Type.BLANK.ordinal()) {
+						data.setTile(data.player.position.x + x, data.player.position.y + y, Tile.Type.AVAILABLE.ordinal());
+					}
+				}
+			}
+		}		
 	}
 
 	private void translateInput(Input input) {
@@ -117,7 +121,7 @@ public class Model {
 		
 		translateInput(input);
 		
-		if(data.getTile(translatedX, translatedY).getId() != Tile.Type.BLANK.ordinal())
+		if(data.getTile(translatedX, translatedY).getId() != Tile.Type.AVAILABLE.ordinal())
 			return false;
 		
 		return true;

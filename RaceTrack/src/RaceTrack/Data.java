@@ -1,18 +1,22 @@
 package RaceTrack;
 
 import TileSystem.Tile;
+import Tools.Finish;
 
 public class Data {
 	public Car player 	= null,
 			   opponent = null; 
 	
+	public Finish finish;
+	
 	private boolean finalState = false;
 	private int[][] map;
 	private int mapWidth, mapHeight;
 
-	public Data(int x, int y, int pMapWidth, int pMapHeight, int finishX1, int finishY1, int finishX2, int finishY2, int finishX3, int finishY3) {
+	public Data(int x, int y, int pMapWidth, int pMapHeight, Finish pFinish) {
 		player = new Car(x - 1, y, 0);
 		opponent = new Car(x + 1, y, 1);
+		finish = pFinish;
 		mapWidth = pMapWidth;
 		mapHeight = pMapHeight;
 		map = new int[mapWidth][mapHeight];
@@ -31,9 +35,17 @@ public class Data {
 		Tile tile = Tile.type[map[x][y]];
 		
 		if(tile == null)
-			return Tile.finishTile;
+			return Tile.blankTile;
 		
 		return tile;
+	}
+	
+	public int getTileId(int x, int y) {
+		
+		if (x >= mapWidth || y >= mapHeight)	
+			return 0;
+		
+		return Tile.type[map[x][y]].getId();
 	}
 	
 	/**This method is used for map generation as well as cars movement in Model*/
