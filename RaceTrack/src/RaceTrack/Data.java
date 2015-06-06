@@ -10,7 +10,7 @@ public class Data {
 	private int[][] map;
 	private int mapWidth, mapHeight;
 
-	public Data(int x, int y, int pMapWidth, int pMapHeight) {
+	public Data(int x, int y, int pMapWidth, int pMapHeight, int finishX1, int finishY1, int finishX2, int finishY2, int finishX3, int finishY3) {
 		player = new Car(x - 1, y, 0);
 		opponent = new Car(x + 1, y, 1);
 		mapWidth = pMapWidth;

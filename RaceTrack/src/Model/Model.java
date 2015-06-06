@@ -1,15 +1,22 @@
 package Model;
 
+import Graphics.Assets;
 import RaceTrack.Data;
 import RaceTrack.Input;
 import TileSystem.Tile;
 import Tools.Tools;
 
 public class Model {
+	/**Positions of a car in tiles*/
+	int translatedX, translatedY;
+	
+	public Model() {
+		translatedX = translatedY = 0;
+	}
 
 	/**This method generates game map*/
-	public Data initialData(int startX, int startY, int width, int height) {
-		Data data = new Data(startX, startY, width, height);
+	public Data initialData(int startX, int startY, int width, int height, int finishX1, int finishY1, int finishX2, int finishY2, int finishX3, int finishY3) {
+		Data data = new Data(startX, startY, width, height, finishX1, finishY1, finishX2, finishY2, finishX3, finishY3);
 		
 		for (int x = 0; x < data.getMapWidth(); x++)
 			for (int y = 0; y < data.getMapHeight(); y++)
@@ -33,18 +40,24 @@ public class Model {
 	
 	/*This method loads map from file**/
 	public Data initialData(String path) {
-		int startX, startY, width, height;
+		int startX, startY, width, height, finishX1, finishY1, finishX2, finishY2, finishX3, finishY3;
 		String file = Tools.loadFileAsString(path);
 		String[] mapTile = file.split("\\s+");
 		width = Tools.parseInt(mapTile[0]);
 		height = Tools.parseInt(mapTile[1]);
 		startX = Tools.parseInt(mapTile[2]);
 		startY = Tools.parseInt(mapTile[3]);
-		Data data = new Data(startX, startY, width, height);
+		finishX1 = Tools.parseInt(mapTile[4]);
+		finishY1 = Tools.parseInt(mapTile[5]);
+		finishX2 = Tools.parseInt(mapTile[6]);
+		finishY2 = Tools.parseInt(mapTile[7]);
+		finishX3 = Tools.parseInt(mapTile[8]);
+		finishY3 = Tools.parseInt(mapTile[9]);
+		Data data = new Data(startX, startY, width, height, finishX1, finishY1, finishX2, finishY2, finishX3, finishY3);//robisz kurwe z kodu
 
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
-				data.setTile(x, y, Tools.parseInt(mapTile[(x + y * width) + 4]));
+				data.setTile(x, y, Tools.parseInt(mapTile[(x + y * width) + 10]));
 			}
 		}
 		
@@ -62,13 +75,49 @@ public class Model {
 		if (!correctInput(data, input))
 			return;
 		
-		data.setTile(11-1, 11, Tile.Type.PLAYER_CAR.ordinal());
-		System.out.println("wykonujesie");
+		data.setTile(data.player.position.x, data.player.position.y, Tile.Type.BLANK.ordinal());
+		data.player.position.x = translatedX;
+		data.player.position.y = translatedY;
+		data.setTile(data.player.position.x, data.player.position.y, Tile.Type.PLAYER_CAR.ordinal());
+		
+		computeAvailables(data);
+		moveOpponent(data);
+		
+		if (data.isFinal())
+			endGame();
 	}
 	
+	private void endGame() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**This method also checks if the state is final*/
+	private void moveOpponent(Data data) {
+		data.setTile(data.opponent.position.x, data.opponent.position.y, Tile.Type.BLANK.ordinal());
+		data.opponent.position.y--;
+		data.setTile(data.opponent.position.x, data.opponent.position.y, Tile.Type.OPPONENT_CAR.ordinal());
+	}
+
+	/**This method also checks if the state is final*/
+	private void computeAvailables(Data data) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void translateInput(Input input) {
+		translatedX = input.get().x / Assets.getWidth();
+		translatedY = input.get().y / Assets.getHeight();
+	}
+
 	private boolean correctInput(Data data, Input input) {
 
 		if (input == null || input.isNull())
+			return false;
+		
+		translateInput(input);
+		
+		if(data.getTile(translatedX, translatedY).getId() != Tile.Type.BLANK.ordinal())
 			return false;
 		
 		return true;
