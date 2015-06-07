@@ -1,5 +1,8 @@
 package RaceTrack;
 
+import java.awt.Point;
+import java.util.Vector;
+
 import TileSystem.Tile;
 import Tools.Finish;
 
@@ -8,6 +11,7 @@ public class Data {
 			   opponent = null; 
 	
 	public Finish finish;
+	private Vector availables;
 	
 	private boolean finalState = false;
 	private int[][] map;
@@ -20,6 +24,7 @@ public class Data {
 		mapWidth = pMapWidth;
 		mapHeight = pMapHeight;
 		map = new int[mapWidth][mapHeight];
+		availables = new Vector();
 	}
 	
 	public boolean isFinal() {
@@ -69,4 +74,29 @@ public class Data {
 		pMap = map;
 	}
 	
+	public void addAvailable(int x, int y) {
+		availables.addElement(new Point(x, y));
+	}
+	
+	public Point getAvailable() {
+		return (Point) availables.get(0);
+	}
+	
+	public int availablesCount() {
+		return availables.size();
+	}
+	
+	public void removeAvailable() {
+		availables.remove(0);
+	}
+	
+	public void removeAvailable(int x, int y) {
+		Point tmp;
+		
+		for (int i = 0; i < availables.size(); i++) {
+			tmp = (Point) availables.get(i);
+			if (tmp.x == x && tmp.y == y)
+				availables.remove(tmp);
+		}
+	}
 }
