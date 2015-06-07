@@ -1,5 +1,6 @@
 package RaceTrack;
 
+import java.awt.Point;
 import java.util.Vector;
 
 public class Car {
@@ -21,6 +22,7 @@ public class Car {
 		position = new Positions(x, y);
 		x_velocity = y_velocity = 0;
 		path = new Vector();
+		path.add(new Point(x,y));
 		orientation = "N";
 		team = pTeam;
 	}

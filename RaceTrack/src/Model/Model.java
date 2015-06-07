@@ -76,6 +76,7 @@ public class Model {
 		if (!correctInput(data, input))
 			return;
 		
+		data.player.path.add(new Point(data.player.position.x, data.player.position.y));
 		data.setTile(data.player.position.x, data.player.position.y, Tile.Type.BLANK.ordinal());
 		data.player.position.x = translatedX;
 		data.player.position.y = translatedY;
@@ -112,18 +113,28 @@ public class Model {
 			data.setTile(tmp.x, tmp.y, Tile.Type.BLANK.ordinal());
 			data.removeAvailable();
 		}
+		tmp = (Point) data.player.path.get(data.player.path.size()-1);
 		int playerX = data.player.position.x, playerY = data.player.position.y;
+		int baseX = 2*playerX - tmp.x, baseY = 2*playerY - tmp.y;
+		
+		//TODO check for collisions with wall
+		if (baseX > data.getMapWidth() || baseX < 0 || baseY > data.getMapHeight() || baseY < 0) {
+			data.setFinal();
+			return;
+		}
 		
 		for (int x = -1; x < 2; x++) {
 			for (int y = -1; y < 2; y++) {
-				if (data.getTileId(playerX + x, playerY + y) == Tile.Type.BLANK.ordinal()) {
-					data.setTile(playerX + x, playerY + y, Tile.Type.AVAILABLE.ordinal());
-					data.addAvailable(playerX + x, playerY + y);
-				}
+				if (baseX + x < data.getMapWidth() && baseX + x >= 0 && baseY + y < data.getMapHeight() && baseY + y >= 0) {
+					if (data.getTileId(baseX + x, baseY + y) == Tile.Type.BLANK.ordinal()) {
+						data.setTile(baseX + x, baseY + y, Tile.Type.AVAILABLE.ordinal());
+						data.addAvailable(baseX + x, baseY + y);
+					}
+				} 
 			}
 		}		
 	}
-
+	
 	private void translateInput(Input input) {
 		translatedX = input.get().x / Assets.getWidth();
 		translatedY = input.get().y / Assets.getHeight();
