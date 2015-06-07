@@ -1,6 +1,7 @@
 package Model;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 
 import Graphics.Assets;
 import RaceTrack.Data;
@@ -51,6 +52,8 @@ public class Model {
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
 				data.setTile(x, y, Tools.parseInt(mapTile[(x + y * width) + 10]));
+				if (Tools.parseInt(mapTile[(x + y * width) + 10]) == Tile.Type.WALL.ordinal())
+					data.addWall(x, y);
 			}
 		}
 		
@@ -118,26 +121,63 @@ public class Model {
 		int baseX = 2*playerX - tmp.x, baseY = 2*playerY - tmp.y;
 		
 		//TODO check for collisions with wall
+		
 		if (baseX > data.getMapWidth() || baseX < 0 || baseY > data.getMapHeight() || baseY < 0) {
 			data.setFinal();
 			return;
 		}
 		
+		Rectangle tmpRectangle;
+		int availableFields = 0;
 		for (int x = -1; x < 2; x++) {
 			for (int y = -1; y < 2; y++) {
+				availability_check:
 				if (baseX + x < data.getMapWidth() && baseX + x >= 0 && baseY + y < data.getMapHeight() && baseY + y >= 0) {
+					for (int i = 0; i < data.wallCount(); i++) {
+						tmp = data.getWall(i);
+						tmpRectangle = new Rectangle(translateX(tmp.x), translateY(tmp.y), Assets.getWidth(), Assets.getHeight());
+						if (tmpRectangle.intersectsLine(translateXcenter(baseX + x), translateYcenter(baseY + y), translateXcenter(playerX), translateYcenter(playerY))) {
+							break availability_check;
+						}
+					}
 					if (data.getTileId(baseX + x, baseY + y) == Tile.Type.BLANK.ordinal()) {
 						data.setTile(baseX + x, baseY + y, Tile.Type.AVAILABLE.ordinal());
 						data.addAvailable(baseX + x, baseY + y);
+						availableFields++;
 					}
 				} 
 			}
-		}		
+		}	
+		
+		if (availableFields == 0) {
+			data.setFinal();
+			return;
+		}
 	}
 	
 	private void translateInput(Input input) {
 		translatedX = input.get().x / Assets.getWidth();
 		translatedY = input.get().y / Assets.getHeight();
+	}
+	
+	/**Translates input for getting rectangle*/
+	private int translateX(int x) {
+		return (x * Assets.getWidth());
+	}
+	
+	/**Translates input for getting rectangle*/
+	private int translateY(int y) {
+		return (y * Assets.getHeight());
+	}
+	
+	/**Translates input for getting tile center*/
+	private int translateXcenter(int x) {
+		return (x * Assets.getWidth() + (Assets.getWidth() / 2));
+	}
+	
+	/**Translates input for getting tile center*/
+	private int translateYcenter(int y) {
+		return (y * Assets.getHeight() + (Assets.getHeight()));
 	}
 
 	private boolean correctInput(Data data, Input input) {

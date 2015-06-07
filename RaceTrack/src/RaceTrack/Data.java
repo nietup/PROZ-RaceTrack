@@ -12,6 +12,7 @@ public class Data {
 	
 	public Finish finish;
 	private Vector availables;
+	private Vector walls;
 	
 	private boolean finalState = false;
 	private int[][] map;
@@ -25,6 +26,7 @@ public class Data {
 		mapHeight = pMapHeight;
 		map = new int[mapWidth][mapHeight];
 		availables = new Vector();
+		walls= new Vector();
 	}
 	
 	public boolean isFinal() {
@@ -98,5 +100,17 @@ public class Data {
 			if (tmp.x == x && tmp.y == y)
 				availables.remove(tmp);
 		}
+	}
+	
+	public void addWall(int x, int y) {
+		walls.addElement(new Point(x, y));
+	}
+	
+	public Point getWall(int i) {
+		return (Point) walls.get(i);
+	}
+	
+	public int wallCount() {
+		return walls.size();
 	}
 }
