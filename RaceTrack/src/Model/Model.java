@@ -99,6 +99,39 @@ public class Model {
 		return data;
 	}
 	
+	/**Basic random level generating function (1 in 6 tiles will be wall)*/
+	public Data generateMap(int width, int height) {
+		Random rand = new Random();
+		int startX = rand.nextInt(width-6)+3, startY = rand.nextInt(height);
+		Finish finish = new Finish();
+		finish.first.x = rand.nextInt(width);
+		finish.first.y = rand.nextInt(height);
+		finish.secound.x = rand.nextInt(width);
+		finish.secound.y = rand.nextInt(height);
+		finish.third.x = rand.nextInt(width);
+		finish.third.y = rand.nextInt(height);
+		Data data = new Data(startX, startY, width, height, finish);
+
+		for(int y = 0; y < height; y++) {
+			for(int x = 0; x < width; x++) {
+				if (rand.nextInt(6) == 0) {
+					data.setTile(x, y, Tile.Type.WALL.ordinal());
+					data.addWall(x, y);
+				} else {
+					data.setTile(x, y, Tile.Type.BLANK.ordinal());
+				}
+			}
+		}
+		
+		data.setTile(finish.first.x, finish.first.y, Tile.Type.FINISH.ordinal());
+		data.setTile(finish.secound.x, finish.secound.y, Tile.Type.FINISH.ordinal());
+		data.setTile(finish.third.x, finish.third.y, Tile.Type.FINISH.ordinal());
+		data.setTile(startX-1, startY, Tile.Type.PLAYER_CAR.ordinal());
+		data.setTile(startX+1, startY, Tile.Type.OPPONENT_CAR.ordinal());
+		
+		return data;
+	}
+	
 	/** This is main game thick 
 	 * @param data information about actual map situation, that will be processed
 	 * @param input information about player choice*/
