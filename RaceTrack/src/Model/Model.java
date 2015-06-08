@@ -117,7 +117,7 @@ public class Model {
 		computeAvailables(data);
 	}
 	
-	/**This method also checks if the state is final*/
+	/**This method changes player's position, rotates it, updates information about its path and checks if the state is final*/
 	private void move(Data data, Input input) {
 		Car actual;
 		
@@ -126,6 +126,7 @@ public class Model {
 		else
 			actual = data.opponent;
 		
+		/**Moving tile*/
 		actual.path.add(new Point(actual.position.x, actual.position.y));
 		data.setTile(actual.position.x, actual.position.y, Tile.Type.BLANK.ordinal());
 		actual.position.x = translatedX;
@@ -195,7 +196,7 @@ public class Model {
 			
 	}
 
-	/**This method also checks if the state is final*/
+	/**This method computes possible moves for the next player and checks if the state is final*/
 	private void computeAvailables(Data data) {
 		Car actual;
 		
@@ -214,7 +215,7 @@ public class Model {
 			data.removeAvailable();
 		}
 		
-		/**in case of crossing the finish line*/
+		/**in case of crossing the finish line by the previous player*/
 		if (data.isFinal())
 			return;
 		
@@ -223,6 +224,7 @@ public class Model {
 		/**Adding (previous position, actual position) vector to players actual position*/
 		int baseX = 2*playerX - tmp.x, baseY = 2*playerY - tmp.y;
 		
+		/**Checking for collisions with all walls*/
 		Rectangle tmpRectangle;
 		int availableFields = 0;
 		for (int y = -1; y < 2; ++y) {
@@ -231,6 +233,7 @@ public class Model {
 				if (baseX + x < data.getMapWidth() && baseX + x >= 0 && baseY + y < data.getMapHeight() && baseY + y >= 0) {
 					for (int i = 0; i < data.wallCount(); i++) {
 						tmp = data.getWall(i);
+						/**The tolerance is a little bit increased because of sharp edges*/
 						tmpRectangle = new Rectangle(translateX(tmp.x)+3, translateY(tmp.y)+3, Assets.getWidth()-6, Assets.getHeight()-6);
 						if (tmpRectangle.intersectsLine(translateXcenter(playerX), translateYcenter(playerY), translateXcenter(baseX + x), translateYcenter(baseY + y))) {
 							break availability_check;
@@ -245,6 +248,7 @@ public class Model {
 			}
 		}	
 		
+		/**Game ends when there is no more legal moves*/
 		if (availableFields == 0) {
 			endGame(whoseTurn, data);
 			return;
@@ -276,6 +280,7 @@ public class Model {
 		return (y * Assets.getHeight() + (Assets.getHeight() / 2));
 	}
 
+	/**This method checks if the player made correct move*/
 	private boolean correctInput(Data data, Input input) {
 
 		if (input == null || input.isNull())

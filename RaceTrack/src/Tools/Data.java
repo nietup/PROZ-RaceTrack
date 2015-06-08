@@ -5,6 +5,12 @@ import java.util.Vector;
 
 import TileSystem.Tile;
 
+/**Contains all required information about the game
+ * <br> -players positions
+ * <br> -history of their moves
+ * <br> -their orientation
+ * <br> -all tiles in game
+ * <br>etc.*/
 public class Data {
 	public Car player 	= null,
 			   opponent = null; 
@@ -56,6 +62,7 @@ public class Data {
 		return tile;
 	}
 	
+	/**This method is used for rendering in View*/
 	public int getTileId(int x, int y) {
 		
 		if (x >= mapWidth || y >= mapHeight)	

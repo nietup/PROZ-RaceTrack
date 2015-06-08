@@ -1,6 +1,6 @@
 package Tools;
 
-
+/**Contains information about 3 finish line tiles*/
 public class Finish {
 	public Positions first;
 	public Positions secound;

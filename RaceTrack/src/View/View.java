@@ -27,6 +27,8 @@ public class View {
 	private BufferStrategy bufferStrategy;
 	private Graphics graphics;
 		
+	/**@param controller is required to connect mouse listener with canvas
+	 * @param data contains all information required to display the scene*/
 	public View(String pTitle, Data data, Controller controller) {
 		title = pTitle;
 		width = data.getMapWidth() * Assets.getWidth();
@@ -74,6 +76,7 @@ public class View {
 		graphics = bufferStrategy.getDrawGraphics();
 		graphics.clearRect(0, 0, width, height); 			//Clear the scene
 
+		/**Car textures must be updated because of their possible rotation*/
 		Tile.playerCarTile.updateTexture(data.player);
 		Tile.opponentCarTile.updateTexture(data.opponent);
 		
@@ -81,6 +84,7 @@ public class View {
 			for (int x = 0; x < data.getMapWidth(); x++)
 				graphics.drawImage(data.getTile(x, y).getTexture(), Assets.getWidth()*x, Assets.getHeight()*y, null);
 		
+		/**Drawing vehicles paths*/
 		Point tmp = null, tmpPrev;
 		int i;
 		graphics.setColor(Color.RED);
@@ -102,6 +106,7 @@ public class View {
 		if (tmp != null)
 			graphics.drawLine(translateX(tmp.x), translateY(tmp.y), translateX(data.opponent.position.x), translateY(data.opponent.position.y));
 		
+		/**Information about the winner*/
 		if (data.isFinal()) {
 			if (data.getWhoWon() == 0)
 				graphics.drawImage(Assets.red_won, 10, 10, null);

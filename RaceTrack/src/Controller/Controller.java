@@ -7,6 +7,7 @@ import java.util.Scanner;
 import Tools.Data;
 import Tools.Input;
 
+/**Simple mouse listener*/
 public class Controller implements MouseListener{
 	private boolean newInput;
 	private Input input;

@@ -19,7 +19,6 @@ public class Main implements Runnable {
 	private void init() {
 		model = new Model();
 		data = model.initialData();
-		//data = model.initialData();
 		controller = new Controller();
 		view = new View("Race Track Ultimate Pro Elite I - The Race Track Saga", data, controller);
 		input = new Input();
@@ -49,16 +48,18 @@ public class Main implements Runnable {
 		}
 	}
 	
-	/*Contains the main game loop**/
+	/**Contains the main game loop*/
 	public void run() {
 		init();
 		
+		/**Controling of frames per secound rate*/
 		int fps = 60;
 		double timePerTick = 1000000000 / fps;
 		double delta = 0;
 		long now;
 		long lastTime = System.nanoTime();
 		
+		/**The main game loop*/
 		while (run) {
 			now = System.nanoTime();
 			delta += (now - lastTime) / timePerTick;

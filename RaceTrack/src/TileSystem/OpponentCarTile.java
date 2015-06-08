@@ -9,7 +9,6 @@ public class OpponentCarTile extends Tile {
 
 	public OpponentCarTile(int pId) {
 		super(Assets.opponentN, pId);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public void updateTexture(Car car) {

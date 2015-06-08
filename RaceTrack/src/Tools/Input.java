@@ -2,6 +2,7 @@ package Tools;
 
 import java.awt.Point;
 
+/**x anf y of player's click*/
 public class Input {
 	private int x, y;
 	
