@@ -14,10 +14,10 @@ import Controller.Controller;
 import Graphics.Assets;
 import Graphics.ImageLoader;
 import Graphics.SpriteSheetHandler;
-import RaceTrack.Data;
-import RaceTrack.Input;
-import RaceTrack.Positions;
 import TileSystem.Tile;
+import Tools.Data;
+import Tools.Input;
+import Tools.Positions;
 
 public class View {
 	private JFrame frame;

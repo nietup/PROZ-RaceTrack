@@ -1,10 +1,9 @@
-package RaceTrack;
+package Tools;
 
 import java.awt.Point;
 import java.util.Vector;
 
 import TileSystem.Tile;
-import Tools.Finish;
 
 public class Data {
 	public Car player 	= null,

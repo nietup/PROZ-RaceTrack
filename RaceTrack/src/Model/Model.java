@@ -5,12 +5,12 @@ import java.awt.Rectangle;
 import java.util.Random;
 
 import Graphics.Assets;
-import RaceTrack.Car;
-import RaceTrack.Data;
-import RaceTrack.Input;
-import RaceTrack.Positions;
 import TileSystem.Tile;
+import Tools.Car;
+import Tools.Data;
 import Tools.Finish;
+import Tools.Input;
+import Tools.Positions;
 import Tools.Tools;
 
 public class Model {

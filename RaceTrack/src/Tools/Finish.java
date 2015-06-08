@@ -1,6 +1,5 @@
 package Tools;
 
-import RaceTrack.Positions;
 
 public class Finish {
 	public Positions first;

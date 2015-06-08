@@ -1,4 +1,4 @@
-package RaceTrack;
+package Tools;
 
 public class Positions {
 	public int x, y;

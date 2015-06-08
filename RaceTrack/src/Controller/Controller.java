@@ -4,8 +4,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Scanner;
 
-import RaceTrack.Data;
-import RaceTrack.Input;
+import Tools.Data;
+import Tools.Input;
 
 public class Controller implements MouseListener{
 	private boolean newInput;

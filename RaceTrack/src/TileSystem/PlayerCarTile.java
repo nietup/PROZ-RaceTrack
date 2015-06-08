@@ -3,7 +3,7 @@ package TileSystem;
 import java.awt.image.BufferedImage;
 
 import Graphics.Assets;
-import RaceTrack.Car;
+import Tools.Car;
 
 public class PlayerCarTile extends Tile {
 

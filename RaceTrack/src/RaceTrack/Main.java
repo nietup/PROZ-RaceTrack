@@ -2,6 +2,8 @@ package RaceTrack;
 
 import Controller.Controller;
 import Model.Model;
+import Tools.Data;
+import Tools.Input;
 import View.View;
 
 public class Main implements Runnable {
