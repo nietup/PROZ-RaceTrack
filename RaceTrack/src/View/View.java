@@ -17,6 +17,7 @@ import Graphics.SpriteSheetHandler;
 import RaceTrack.Data;
 import RaceTrack.Input;
 import RaceTrack.Positions;
+import TileSystem.Tile;
 
 public class View {
 	private JFrame frame;
@@ -63,12 +64,7 @@ public class View {
 	}
 	
 	/** This is rendering function */
-	public void update(Data data) {
-		if (data.isFinal()) {
-			System.out.println("GAME OVER");
-			return;
-		}
-		
+	public void update(Data data) {		
 		bufferStrategy = canvas.getBufferStrategy();
 		
 		if (bufferStrategy == null) {
@@ -77,6 +73,19 @@ public class View {
 		}
 		graphics = bufferStrategy.getDrawGraphics();
 		graphics.clearRect(0, 0, width, height); 			//Clear the scene
+		
+		if (data.isFinal()) {
+			if (data.getWhoWon() == 0)
+				graphics.drawImage(Assets.red_won, 250, 125, null);
+			else
+				graphics.drawImage(Assets.blue_won, 250, 125, null);
+			bufferStrategy.show();
+			graphics.dispose();
+			return;
+		}
+
+		Tile.playerCarTile.updateTexture(data.player);
+		Tile.opponentCarTile.updateTexture(data.opponent);
 		
 		for (int y = 0; y < data.getMapHeight(); y++)
 			for (int x = 0; x < data.getMapWidth(); x++)
@@ -92,6 +101,16 @@ public class View {
 		}
 		if (tmp != null)
 			graphics.drawLine(translateX(tmp.x), translateY(tmp.y), translateX(data.player.position.x), translateY(data.player.position.y));
+		
+		tmp = null;
+		graphics.setColor(Color.BLUE);
+		for (i = 0; i + 1 < data.opponent.path.size(); i++) {
+			tmpPrev = (Point) data.opponent.path.get(i);
+			tmp = (Point) data.opponent.path.get(i + 1);
+			graphics.drawLine(translateX(tmpPrev.x), translateY(tmpPrev.y), translateX(tmp.x), translateY(tmp.y));
+		}
+		if (tmp != null)
+			graphics.drawLine(translateX(tmp.x), translateY(tmp.y), translateX(data.opponent.position.x), translateY(data.opponent.position.y));
 
 		bufferStrategy.show();
 		graphics.dispose();

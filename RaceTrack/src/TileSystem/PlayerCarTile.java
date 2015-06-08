@@ -15,7 +15,6 @@ public class PlayerCarTile extends Tile {
 	/**This method updates cat texture depending on car orientation
 	 * it is to be executed in Model*/
 	public void updateTexture(Car car) {
-		if (car.team == 0)
 			switch (car.orientation) {
 			case "N":
 				texture = Assets.playerN;
@@ -24,49 +23,22 @@ public class PlayerCarTile extends Tile {
 				texture = Assets.playerNE;
 				break;
 			case "E":
-				texture = Assets.playerN;
+				texture = Assets.playerE;
 				break;
 			case "SE":
-				texture = Assets.playerNE;
+				texture = Assets.playerSE;
 				break;
 			case "S":
-				texture = Assets.playerN;
+				texture = Assets.playerS;
 				break;
 			case "SW":
-				texture = Assets.playerNE;
+				texture = Assets.playerSW;
 				break;
 			case "W":
-				texture = Assets.playerN;
+				texture = Assets.playerW;
 				break;
 			case "NW":
-				texture = Assets.playerNE;
-				break;
-			}
-		else
-			switch (car.orientation) {
-			case "N":
-				texture = Assets.opponentN;
-				break;
-			case "NE":
-				texture = Assets.opponentNE;
-				break;
-			case "E":
-				texture = Assets.opponentN;
-				break;
-			case "SE":
-				texture = Assets.opponentNE;
-				break;
-			case "S":
-				texture = Assets.opponentN;
-				break;
-			case "SW":
-				texture = Assets.opponentNE;
-				break;
-			case "W":
-				texture = Assets.opponentN;
-				break;
-			case "NW":
-				texture = Assets.opponentNE;
+				texture = Assets.playerNW;
 				break;
 			}
 	}

@@ -36,9 +36,13 @@ public class Assets {
 								sw_e,
 								w_se, 
 								w_ne,
-								available;
+								available,
+								red_won,
+								blue_won;
 	
 	public static void init() {
+		red_won = ImageLoader.loadImage("/Gfx/red.jpg");
+		blue_won = ImageLoader.loadImage("/Gfx/blue.jpg");
 		SpriteSheetHandler sprites = new SpriteSheetHandler(ImageLoader.loadImage("/Gfx/SpriteSheet.jpg"));
 
 		playerN = sprites.crop(0, 0, width, height);

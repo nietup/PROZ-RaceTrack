@@ -2,8 +2,10 @@ package Model;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Random;
 
 import Graphics.Assets;
+import RaceTrack.Car;
 import RaceTrack.Data;
 import RaceTrack.Input;
 import TileSystem.Tile;
@@ -14,27 +16,57 @@ public class Model {
 	/**Positions of a car in tiles*/
 	int translatedX, translatedY;
 	boolean firstTurn;
+	/**false - red car turn
+	 * true - blue car turn*/
+	boolean whoseTurn;
 	
 	public Model() {
 		translatedX = translatedY = 0;
 		firstTurn = true;
+		whoseTurn = false;
 	}
-
-	/**This method generates game map*/
-	public Data initialData(int startX, int startY, int width, int height, Finish finish) {
+	
+	/*This method loads map from specified file**/
+	public Data initialData(String path) {
+		int startX, startY, width, height;
+		Finish finish = new Finish();
+		String file = Tools.loadFileAsString(path);
+		String[] mapTile = file.split("\\s+");
+		width = Tools.parseInt(mapTile[0]);
+		height = Tools.parseInt(mapTile[1]);
+		startX = Tools.parseInt(mapTile[2]);
+		startY = Tools.parseInt(mapTile[3]);
+		finish.first.x = Tools.parseInt(mapTile[4]);
+		finish.first.y = Tools.parseInt(mapTile[5]);
+		finish.secound.x = Tools.parseInt(mapTile[6]);
+		finish.secound.y = Tools.parseInt(mapTile[7]);
+		finish.third.x = Tools.parseInt(mapTile[8]);
+		finish.third.y = Tools.parseInt(mapTile[9]);
 		Data data = new Data(startX, startY, width, height, finish);
+
+		for(int y = 0; y < height; y++) {
+			for(int x = 0; x < width; x++) {
+				data.setTile(x, y, Tools.parseInt(mapTile[(x + y * width) + 10]));
+				if (Tools.parseInt(mapTile[(x + y * width) + 10]) == Tile.Type.WALL.ordinal())
+					data.addWall(x, y);
+			}
+		}
 		
-		for (int x = 0; x < data.getMapWidth(); x++)
-			for (int y = 0; y < data.getMapHeight(); y++)
-				data.setTile(x, y, 0);
+		data.setTile(finish.first.x, finish.first.y, Tile.Type.FINISH.ordinal());
+		data.setTile(finish.secound.x, finish.secound.y, Tile.Type.FINISH.ordinal());
+		data.setTile(finish.third.x, finish.third.y, Tile.Type.FINISH.ordinal());
+		data.setTile(startX-1, startY, Tile.Type.PLAYER_CAR.ordinal());
+		data.setTile(startX+1, startY, Tile.Type.OPPONENT_CAR.ordinal());
 		
 		return data;
 	}
 	
-	/*This method loads map from file**/
-	public Data initialData(String path) {
+	/*This method loads map from random file**/
+	public Data initialData() {
 		int startX, startY, width, height;
 		Finish finish = new Finish();
+		Random rand = new Random();
+		String path = "Assets/Maps/Map" + (rand.nextInt(1)+1) + ".lvl";
 		String file = Tools.loadFileAsString(path);
 		String[] mapTile = file.split("\\s+");
 		width = Tools.parseInt(mapTile[0]);
@@ -79,48 +111,89 @@ public class Model {
 		if (!correctInput(data, input))
 			return;
 		
-		data.player.path.add(new Point(data.player.position.x, data.player.position.y));
-		data.setTile(data.player.position.x, data.player.position.y, Tile.Type.BLANK.ordinal());
-		data.player.position.x = translatedX;
-		data.player.position.y = translatedY;
-		data.setTile(data.player.position.x, data.player.position.y, Tile.Type.PLAYER_CAR.ordinal());
-		data.removeAvailable(translatedX, translatedY);
-		
-		moveOpponent(data);
-		
+		move(data, input);
+		whoseTurn = !whoseTurn;
 		computeAvailables(data);
-		
-		if (data.isFinal())
-			endGame();
 	}
 	
-	private void endGame() {
-		// TODO Auto-generated method stub
+	private void move(Data data, Input input) {
+		Car actual;
+		
+		if (whoseTurn == false)
+			actual = data.player;
+		else
+			actual = data.opponent;
+		
+		actual.path.add(new Point(actual.position.x, actual.position.y));
+		data.setTile(actual.position.x, actual.position.y, Tile.Type.BLANK.ordinal());
+		actual.position.x = translatedX;
+		actual.position.y = translatedY;
+		data.setTile(actual.position.x, actual.position.y, (whoseTurn) ? Tile.Type.OPPONENT_CAR.ordinal() : Tile.Type.PLAYER_CAR.ordinal());
+		data.removeAvailable(translatedX, translatedY);
+		
+		/**Car rotations*/
+		Point tmp = (Point) actual.path.get(actual.path.size()-1);
+		int playerX = actual.position.x, playerY = actual.position.y;
+		int baseX = playerX - tmp.x, baseY = playerY - tmp.y;
+		if (baseX == 0) {
+			if (baseY >= 0)
+				actual.orientation = "S";
+			else
+				actual.orientation = "N";
+			return;
+		}
+		if (baseY == 0) {
+			if (baseX >= 0)
+				actual.orientation = "E";
+			else
+				actual.orientation = "W";
+			return;
+		}
+		if (baseX >= 0) {
+			if (baseY >= 0)
+				actual.orientation = "SE";
+			else
+				actual.orientation = "NE";
+			return;
+		}
+		if (baseY >= 0)
+			actual.orientation = "SW";
+		else
+			actual.orientation = "NW";
 		
 	}
 
-	/**This method also checks if the state is final*/
-	private void moveOpponent(Data data) {
-		//data.setTile(data.opponent.position.x, data.opponent.position.y, Tile.Type.BLANK.ordinal());
-		//data.opponent.position.y--;
-		//data.setTile(data.opponent.position.x, data.opponent.position.y, Tile.Type.OPPONENT_CAR.ordinal());
+	private void endGame(boolean who, Data data) {
+		data.setFinal();
+		
+		if (who)
+			data.setWhoWon(0);
+		else
+			data.setWhoWon(1);
+			
 	}
 
 	/**This method also checks if the state is final*/
 	private void computeAvailables(Data data) {
+		Car actual;
+		
+		if (whoseTurn == false)
+			actual = data.player;
+		else
+			actual = data.opponent;
+		
+		
 		Point tmp;
 		int availablesCount = data.availablesCount();
-		
+		/**Clearing previous availables*/
 		for (int x = 0; x < availablesCount; x++) {
 			tmp = data.getAvailable();
 			data.setTile(tmp.x, tmp.y, Tile.Type.BLANK.ordinal());
 			data.removeAvailable();
 		}
-		tmp = (Point) data.player.path.get(data.player.path.size()-1);
-		int playerX = data.player.position.x, playerY = data.player.position.y;
+		tmp = (Point) actual.path.get(actual.path.size()-1);
+		int playerX = actual.position.x, playerY = actual.position.y;
 		int baseX = 2*playerX - tmp.x, baseY = 2*playerY - tmp.y;
-		
-		//TODO check for collisions with wall
 		
 		if (baseX > data.getMapWidth() || baseX < 0 || baseY > data.getMapHeight() || baseY < 0) {
 			data.setFinal();
@@ -136,7 +209,8 @@ public class Model {
 					for (int i = 0; i < data.wallCount(); i++) {
 						tmp = data.getWall(i);
 						tmpRectangle = new Rectangle(translateX(tmp.x), translateY(tmp.y), Assets.getWidth(), Assets.getHeight());
-						if (tmpRectangle.intersectsLine(translateXcenter(baseX + x), translateYcenter(baseY + y), translateXcenter(playerX), translateYcenter(playerY))) {
+						if (tmpRectangle.intersectsLine(translateXcenter(playerX), translateYcenter(playerY), translateXcenter(baseX + x), translateYcenter(baseY + y))) {
+							System.out.println("Przeciecie " + playerX + " " + playerY + " " +baseX + x+ " " + baseY + y );
 							break availability_check;
 						}
 					}
@@ -150,7 +224,7 @@ public class Model {
 		}	
 		
 		if (availableFields == 0) {
-			data.setFinal();
+			endGame(whoseTurn, data);
 			return;
 		}
 	}

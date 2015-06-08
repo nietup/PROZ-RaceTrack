@@ -13,6 +13,7 @@ public class Data {
 	public Finish finish;
 	private Vector availables;
 	private Vector walls;
+	private int whoWon;
 	
 	private boolean finalState = false;
 	private int[][] map;
@@ -27,8 +28,17 @@ public class Data {
 		map = new int[mapWidth][mapHeight];
 		availables = new Vector();
 		walls= new Vector();
+		whoWon = 0;
 	}
 	
+	public int getWhoWon() {
+		return whoWon;
+	}
+
+	public void setWhoWon(int whoWon) {
+		this.whoWon = whoWon;
+	}
+
 	public boolean isFinal() {
 		return finalState;
 	}

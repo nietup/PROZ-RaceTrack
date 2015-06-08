@@ -2,6 +2,8 @@ package TileSystem;
 
 import java.awt.image.BufferedImage;
 
+import RaceTrack.Car;
+
 public class Tile {
 	private enum Way {n_s, e_w, nw_se, sw_ne, sw_n, n_se, nw_s, s_ne, nw_e, sw_e,w_se, w_ne};
 	
@@ -32,4 +34,6 @@ public class Tile {
 	public BufferedImage getTexture() {
 		return texture;
 	}
+
+	public void updateTexture(Car car){}
 }
