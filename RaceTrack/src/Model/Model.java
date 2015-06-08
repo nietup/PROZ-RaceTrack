@@ -8,6 +8,7 @@ import Graphics.Assets;
 import RaceTrack.Car;
 import RaceTrack.Data;
 import RaceTrack.Input;
+import RaceTrack.Positions;
 import TileSystem.Tile;
 import Tools.Finish;
 import Tools.Tools;
@@ -66,7 +67,7 @@ public class Model {
 		int startX, startY, width, height;
 		Finish finish = new Finish();
 		Random rand = new Random();
-		String path = "Assets/Maps/Map" + (rand.nextInt(1)+1) + ".lvl";
+		String path = "Assets/Maps/Map" + (rand.nextInt(3)+1) + ".lvl";
 		String file = Tools.loadFileAsString(path);
 		String[] mapTile = file.split("\\s+");
 		width = Tools.parseInt(mapTile[0]);
@@ -116,6 +117,7 @@ public class Model {
 		computeAvailables(data);
 	}
 	
+	/**This method also checks if the state is final*/
 	private void move(Data data, Input input) {
 		Car actual;
 		
@@ -131,9 +133,28 @@ public class Model {
 		data.setTile(actual.position.x, actual.position.y, (whoseTurn) ? Tile.Type.OPPONENT_CAR.ordinal() : Tile.Type.PLAYER_CAR.ordinal());
 		data.removeAvailable(translatedX, translatedY);
 		
-		/**Car rotations*/
-		Point tmp = (Point) actual.path.get(actual.path.size()-1);
+
 		int playerX = actual.position.x, playerY = actual.position.y;
+		Point tmp = (Point) actual.path.get(actual.path.size()-1);
+		
+		/**Check for crossing the finish*/
+		Positions tmpFinish = data.finish.first;
+		Rectangle tmpRectangle = new Rectangle(translateX(tmpFinish.x), translateY(tmpFinish.y), Assets.getWidth(), Assets.getHeight());
+		if (tmpRectangle.intersectsLine(translateXcenter(playerX), translateYcenter(playerY), translateXcenter(tmp.x), translateYcenter(tmp.y))) {
+			endGame(!whoseTurn, data);
+		}
+		tmpFinish = data.finish.secound;
+		tmpRectangle = new Rectangle(translateX(tmpFinish.x), translateY(tmpFinish.y), Assets.getWidth(), Assets.getHeight());
+		if (tmpRectangle.intersectsLine(translateXcenter(playerX), translateYcenter(playerY), translateXcenter(tmp.x), translateYcenter(tmp.y))) {
+			endGame(!whoseTurn, data);
+		}
+		tmpFinish = data.finish.third;
+		tmpRectangle = new Rectangle(translateX(tmpFinish.x), translateY(tmpFinish.y), Assets.getWidth(), Assets.getHeight());
+		if (tmpRectangle.intersectsLine(translateXcenter(playerX), translateYcenter(playerY), translateXcenter(tmp.x), translateYcenter(tmp.y))) {
+			endGame(!whoseTurn, data);
+		}
+		
+		/**Car rotations*/
 		int baseX = playerX - tmp.x, baseY = playerY - tmp.y;
 		if (baseX == 0) {
 			if (baseY >= 0)
@@ -156,11 +177,12 @@ public class Model {
 				actual.orientation = "NE";
 			return;
 		}
-		if (baseY >= 0)
+		if (baseX < 0 ) {
+			if (baseY >= 0)
 			actual.orientation = "SW";
-		else
-			actual.orientation = "NW";
-		
+			else
+				actual.orientation = "NW";
+		}		
 	}
 
 	private void endGame(boolean who, Data data) {
@@ -210,7 +232,7 @@ public class Model {
 						tmp = data.getWall(i);
 						tmpRectangle = new Rectangle(translateX(tmp.x), translateY(tmp.y), Assets.getWidth(), Assets.getHeight());
 						if (tmpRectangle.intersectsLine(translateXcenter(playerX), translateYcenter(playerY), translateXcenter(baseX + x), translateYcenter(baseY + y))) {
-							System.out.println("Przeciecie " + playerX + " " + playerY + " " +baseX + x+ " " + baseY + y );
+							//System.out.println("Przeciecie " + playerX + " " + playerY + " " +baseX + x+ " " + baseY + y );
 							break availability_check;
 						}
 					}
@@ -261,7 +283,7 @@ public class Model {
 		
 		translateInput(input);
 		
-		if(data.getTile(translatedX, translatedY).getId() != Tile.Type.AVAILABLE.ordinal())
+		if((data.getTile(translatedX, translatedY).getId() != Tile.Type.AVAILABLE.ordinal()) && (data.getTile(translatedX, translatedY).getId() != Tile.Type.FINISH.ordinal()))
 			return false;
 		
 		return true;

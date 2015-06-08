@@ -73,16 +73,6 @@ public class View {
 		}
 		graphics = bufferStrategy.getDrawGraphics();
 		graphics.clearRect(0, 0, width, height); 			//Clear the scene
-		
-		if (data.isFinal()) {
-			if (data.getWhoWon() == 0)
-				graphics.drawImage(Assets.red_won, 250, 125, null);
-			else
-				graphics.drawImage(Assets.blue_won, 250, 125, null);
-			bufferStrategy.show();
-			graphics.dispose();
-			return;
-		}
 
 		Tile.playerCarTile.updateTexture(data.player);
 		Tile.opponentCarTile.updateTexture(data.opponent);
@@ -111,7 +101,14 @@ public class View {
 		}
 		if (tmp != null)
 			graphics.drawLine(translateX(tmp.x), translateY(tmp.y), translateX(data.opponent.position.x), translateY(data.opponent.position.y));
-
+		
+		if (data.isFinal()) {
+			if (data.getWhoWon() == 0)
+				graphics.drawImage(Assets.red_won, 10, 10, null);
+			else
+				graphics.drawImage(Assets.blue_won, 10, 10, null);
+		}
+		
 		bufferStrategy.show();
 		graphics.dispose();
 	}
