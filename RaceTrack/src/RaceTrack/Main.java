@@ -16,7 +16,7 @@ public class Main implements Runnable {
 	
 	private void init() {
 		model = new Model();
-		data = model.initialData("Assets/Maps/Map3.lvl");
+		data = model.initialData();
 		//data = model.initialData();
 		controller = new Controller();
 		view = new View("Race Track Ultimate Pro Elite I - The Race Track Saga", data, controller);

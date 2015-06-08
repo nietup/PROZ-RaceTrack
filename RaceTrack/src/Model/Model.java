@@ -213,26 +213,26 @@ public class Model {
 			data.setTile(tmp.x, tmp.y, Tile.Type.BLANK.ordinal());
 			data.removeAvailable();
 		}
+		
+		/**in case of crossing the finish line*/
+		if (data.isFinal())
+			return;
+		
 		tmp = (Point) actual.path.get(actual.path.size()-1);
 		int playerX = actual.position.x, playerY = actual.position.y;
+		/**Adding (previous position, actual position) vector to players actual position*/
 		int baseX = 2*playerX - tmp.x, baseY = 2*playerY - tmp.y;
-		
-		if (baseX > data.getMapWidth() || baseX < 0 || baseY > data.getMapHeight() || baseY < 0) {
-			data.setFinal();
-			return;
-		}
 		
 		Rectangle tmpRectangle;
 		int availableFields = 0;
-		for (int x = -1; x < 2; x++) {
-			for (int y = -1; y < 2; y++) {
+		for (int y = -1; y < 2; ++y) {
+			for (int x = -1; x < 2; ++x) {
 				availability_check:
 				if (baseX + x < data.getMapWidth() && baseX + x >= 0 && baseY + y < data.getMapHeight() && baseY + y >= 0) {
 					for (int i = 0; i < data.wallCount(); i++) {
 						tmp = data.getWall(i);
-						tmpRectangle = new Rectangle(translateX(tmp.x), translateY(tmp.y), Assets.getWidth(), Assets.getHeight());
+						tmpRectangle = new Rectangle(translateX(tmp.x)+3, translateY(tmp.y)+3, Assets.getWidth()-6, Assets.getHeight()-6);
 						if (tmpRectangle.intersectsLine(translateXcenter(playerX), translateYcenter(playerY), translateXcenter(baseX + x), translateYcenter(baseY + y))) {
-							//System.out.println("Przeciecie " + playerX + " " + playerY + " " +baseX + x+ " " + baseY + y );
 							break availability_check;
 						}
 					}
@@ -273,7 +273,7 @@ public class Model {
 	
 	/**Translates input for getting tile center*/
 	private int translateYcenter(int y) {
-		return (y * Assets.getHeight() + (Assets.getHeight()));
+		return (y * Assets.getHeight() + (Assets.getHeight() / 2));
 	}
 
 	private boolean correctInput(Data data, Input input) {
@@ -283,8 +283,27 @@ public class Model {
 		
 		translateInput(input);
 		
-		if((data.getTile(translatedX, translatedY).getId() != Tile.Type.AVAILABLE.ordinal()) && (data.getTile(translatedX, translatedY).getId() != Tile.Type.FINISH.ordinal()))
-			return false;
+		if(data.getTile(translatedX, translatedY).getId() != Tile.Type.AVAILABLE.ordinal()) {
+			if (data.getTile(translatedX, translatedY).getId() != Tile.Type.FINISH.ordinal()) {
+				return false;
+			} else {
+				/**Check if finish is in range*/
+				Car actual;
+				
+				if (whoseTurn == false)
+					actual = data.player;
+				else
+					actual = data.opponent;
+				
+				Point tmp = (Point) actual.path.get(actual.path.size()-1);
+				int playerX = actual.position.x, playerY = actual.position.y;
+				/**Adding (previous position, actual position) vector to players actual position*/
+				int baseX = 2*playerX - tmp.x, baseY = 2*playerY - tmp.y;
+				
+				if (translatedX > baseX + 1 || translatedX < baseX - 1 || translatedY > baseY + 1 || translatedY < baseY - 1)
+					return false;
+			}
+		}
 		
 		return true;
 	}
