@@ -9,17 +9,18 @@ import View.View;
 public class Main implements Runnable {
 	private boolean run = false;
 	private Thread thread;
+	private int mode;
 	
-	Model model;
-	View view;
-	Controller controller;
-	Data data;
-	Input input;
+	private Model model;
+	private View view;
+	private Controller controller;
+	private Data data;
+	private Input input;
 	
-	private void init() {
+	Main(int pMode) {
+		mode = pMode;
 		model = new Model();
-		//data = model.initialData();
-		data = model.generateMap(40, 30);
+		data = (mode == 0) ?  model.initialData() : model.generateMap(40, 30);
 		controller = new Controller();
 		view = new View("Race Track Ultimate Pro Elite I - The Race Track Saga", data, controller);
 		input = new Input();
@@ -50,9 +51,7 @@ public class Main implements Runnable {
 	}
 	
 	/**Contains the main game loop*/
-	public void run() {
-		init();
-		
+	public void run() {		
 		/**Controling of frames per secound rate*/
 		int fps = 60;
 		double timePerTick = 1000000000 / fps;
@@ -77,7 +76,7 @@ public class Main implements Runnable {
 	}
 	
 	public static void main(String[] args) {
-		Main game = new Main();
+		Main game = new Main(1);
 		game.start();
 	}
 }
